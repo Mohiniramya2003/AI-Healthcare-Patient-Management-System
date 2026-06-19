@@ -1,23 +1,44 @@
-def generate_health_prediction(glucose, haemoglobin, cholesterol):
+import google.generativeai as genai
 
-    risk = []
+genai.configure(
+    api_key="YOUR_API_KEY"
+)
 
-    if glucose > 140:
-        risk.append("High Diabetes Risk")
+model = genai.GenerativeModel("gemini-2.0-flash-lite")
 
-    elif glucose > 100:
-        risk.append("Pre-Diabetes Risk")
 
-    if cholesterol > 240:
-        risk.append("High Cholesterol Risk")
+def generate_health_prediction(
+    glucose,
+    haemoglobin,
+    cholesterol
+):
 
-    elif cholesterol > 200:
-        risk.append("Borderline Cholesterol")
+    prompt = f"""
+    Glucose: {glucose}
+    Haemoglobin: {haemoglobin}
+    Cholesterol: {cholesterol}
 
-    if haemoglobin < 12:
-        risk.append("Possible Anemia")
+    Predict health risk in one short sentence.
+    """
 
-    if not risk:
-        return "Patient appears healthy based on provided values."
+    try:
 
-    return ", ".join(risk)
+        response = model.generate_content(prompt)
+
+        return response.text.strip()
+
+    except Exception:
+
+        # Fallback prediction if Gemini quota is exceeded
+
+        if glucose > 180:
+            return "High glucose level detected. Medical consultation recommended."
+
+        elif cholesterol > 240:
+            return "High cholesterol level detected. Lifestyle changes recommended."
+
+        elif haemoglobin < 10:
+            return "Low haemoglobin detected. Possible anemia risk."
+
+        else:
+            return "Health parameters appear within acceptable range."
