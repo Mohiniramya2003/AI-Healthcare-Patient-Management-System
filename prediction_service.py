@@ -1,10 +1,10 @@
 import google.generativeai as genai
 
 genai.configure(
-    api_key="YOUR_API_KEY"
+    api_key"ADD_YOUR_GEMINI_API_KE" 
 )
 
-model = genai.GenerativeModel("gemini-2.0-flash-lite")
+model = genai.GenerativeModel("gemini-flash-latest")
 
 
 def generate_health_prediction(
@@ -14,11 +14,20 @@ def generate_health_prediction(
 ):
 
     prompt = f"""
+    You are a healthcare AI assistant.
+
+    Analyze the following patient health parameters:
+
     Glucose: {glucose}
     Haemoglobin: {haemoglobin}
     Cholesterol: {cholesterol}
 
-    Predict health risk in one short sentence.
+    Provide:
+    1. Health assessment
+    2. Possible risks
+    3. Short recommendation
+
+    Keep the response within 2 sentences.
     """
 
     try:
@@ -27,18 +36,6 @@ def generate_health_prediction(
 
         return response.text.strip()
 
-    except Exception:
+    except Exception as e:
 
-        # Fallback prediction if Gemini quota is exceeded
-
-        if glucose > 180:
-            return "High glucose level detected. Medical consultation recommended."
-
-        elif cholesterol > 240:
-            return "High cholesterol level detected. Lifestyle changes recommended."
-
-        elif haemoglobin < 10:
-            return "Low haemoglobin detected. Possible anemia risk."
-
-        else:
-            return "Health parameters appear within acceptable range."
+        return f"AI Service Error: {str(e)}"
