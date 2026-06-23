@@ -16,6 +16,7 @@ async function loadPatients() {
             rows += `
             <tr>
                 <td>${patient.full_name}</td>
+                <td>${patient.date_of_birth}</td>
                 <td>${patient.email}</td>
                 <td>${patient.glucose}</td>
                 <td>${patient.haemoglobin}</td>
